@@ -7,33 +7,41 @@ import sys
 import json
 from itertools import repeat
 
-def validate_file(file):
+def validate_file(file_name):
     '''File validation.
 
-    Create/Open File.
+    Create/Open File, return list of dicts
     '''
     try:
-        with open(file,'r'):
-            print('-- Opening file... \'' + file + '\'!!')
+        with open(file_name,'r'):
+            print('-- Opening file... \'' + file_name + '\'!!')
+        with open(file_name,'r') as fread:
+            all_events = json.load(fread)
+        return all_events
     except IOError:
         print('-- File does not exist...')
-        print('-- Creating and using file \'' + file + '\'!')
+        print('-- Creating and using file \'' + file_name + '\'!')
         temp = []
-        with open(file,'w') as fwrite:
+        with open(file_name,'w') as fwrite:
             json.dump(temp, fwrite)
+        return temp
 
-def parse_arg(arg):
+def parse_arguments(arg):
     '''Parses arguments, returns a dict
     
     '''
     arg = arg[1:]
     arg = arg + list(repeat('-',(6-len(arg))))
-    print(arg)
     #temp_dict = { x:y for x in ('User','Command','Date','Start','End','Description') for y in arg }
     temp_dict = dict(zip(['User','Command','Date','Start','End','Description'],arg))
     return temp_dict
 
 def print_event(event):
+    '''Custom output for event dict
+
+    Used by get and remove
+    '''
+
     print('## [[User:' + event['User'] + ']:[Date:' + event['Date'] + ']:[Start:' + event['Start'] + ']:[End:' + event['End'] + ']:[Description:' + event['Description'] + ']]')
 
 def process_event(event, filename = 'event_data.json'):
@@ -43,17 +51,13 @@ def process_event(event, filename = 'event_data.json'):
     validation is done based on the events time to remove concurrency issues
     '''
 
-    validate_file(filename)
-
-    with open(filename,'r') as fread:
-        if fread != None:
-            all_events = json.load(fread)
+    all_events = validate_file(filename)
     if event['Command'] == 'add':
         for i in range(len(all_events)):
             if(((event['Start'] >= all_events[i]['Start'] and \
                     event['Start'] < all_events[i]['End']) or \
                     (event['End'] <= all_events[i]['End'] and \
-                    event['End'] > all_events[i]['Start'])) or \
+                    event['End'] > all_events[i]['Start'])) and \
                     (event['Date'] == all_events[i]['Date'] and \
                     event['User'] == all_events[i]['User'])):
                 print('-- Conflict!! Event exists in the same time frame!!')
@@ -64,24 +68,26 @@ def process_event(event, filename = 'event_data.json'):
         print('-- Event added succesfully!!')
     elif event['Command'] == 'update':
         for i in range(len(all_events)):
-            if(event['Date'] == all_events[i]['Date'] and \
+            if(event['User'] == all_events[i]['User'] and \
+                event['Date'] == all_events[i]['Date'] and \
                 event['Start'] == all_events[i]['Start'] and \
                 (event['End'] != all_events[i]['End'] or \
                 event['Description'] != all_events[i]['Description'])):
                 all_events[i] = event
-            else:
-                print('-- Event does not exist or No changes were made!!!')
+                with open(filename,'w') as fwrite:
+                    json.dump(all_events, fwrite, indent = 4)
+                print('-- Event updated succesfully!!')
                 return
-        with open(filename,'w') as fwrite:
-            json.dump(all_events, fwrite, indent = 4)
-        print('-- Event updated succesfully!!')
+        else:
+            print('-- Event does not exist/No changes were made!!!')
+            return
     elif event['Command'] == 'remove':
         if(event['Date'] == '-'):
             x = input('-- Are you sure that you\'d like to remove all events pertaining '
               'to the user: \'' + event['User'] + '\' (y/n)')
             if x == 'y':
                 print('-- Removing events...')
-                temp_events = [] # A new take on that crappy while loop
+                temp_events = [] #if event['User'] != i['User'] for i on all_events
                 for i in all_events:
                     if(event['User'] != i['User']):
                         temp_events.append(i)
@@ -137,9 +143,9 @@ def process_event(event, filename = 'event_data.json'):
 def main():
     """Begins script's execution
 
-    Recieves arguments, and runs appropriate event_* procedure
+    Recieves arguments, and runs the process_event procedure
     """
-    process_event(parse_arg(list(sys.argv)))
+    process_event(parse_arguments(list(sys.argv)))
 
 if __name__=="__main__":
     main()
