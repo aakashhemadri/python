@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Created on Thu Nov 29 10:41:25 2018
@@ -8,10 +9,10 @@ import json
 from itertools import repeat
 
 def validate_file(file_name):
-    '''File validation.
+    """File validation.
 
     Create/Open File, return list of dicts
-    '''
+    """
     try:
         with open(file_name,'r'):
             print('-- Opening file... \'' + file_name + '\'!!')
@@ -27,9 +28,7 @@ def validate_file(file_name):
         return temp
 
 def parse_arguments(arg):
-    '''Parses arguments, returns a dict
-    
-    '''
+    """Parses arguments, returns a dict"""
     arg = arg[1:]
     arg = arg + list(repeat('-',(6-len(arg))))
     #temp_dict = { x:y for x in ('User','Command','Date','Start','End','Description') for y in arg }
@@ -37,20 +36,18 @@ def parse_arguments(arg):
     return temp_dict
 
 def print_event(event):
-    '''Custom output for event dict
+    """Custom output for event dict
 
     Used by get and remove
-    '''
-
+    """
     print('## [[User:' + event['User'] + ']:[Date:' + event['Date'] + ']:[Start:' + event['Start'] + ']:[End:' + event['End'] + ']:[Description:' + event['Description'] + ']]')
 
 def process_event(event, filename = 'event_data.json'):
-    '''Performs all possible operations on a user's
+    """Performs all possible operations on a user's
     
     All commands can be run as the event is unique,
     validation is done based on the events time to remove concurrency issues
-    '''
-
+    """
     all_events = validate_file(filename)
     if event['Command'] == 'add':
         for i in range(len(all_events)):
