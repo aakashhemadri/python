@@ -1,51 +1,84 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""osi
+"""OSI
 
 Created on Thu Dec 13 11:43:33 2018
 
-@author: 17pw01
+@author: Aakash Hemadri
 """
 import socket
 import time
 from uuid import getnode
 
-def create_message():
+def message(data = None, parse = False):
     """Return's message on users's input."""
-    return str('[-- [' + time.ctime() + ']: ' + input('Enter the message you would like to send: ') + ']')
+    if parse == False:
+        if data == None:
+            data = input('Enter the message you would like to send: ')
+        return str('[-- [' + time.ctime() + ']: ' + data + ']')
+    else:
+        if data != None:
+            temp = data.split('||')
+            print("The message is: " + str(temp[0]))
+            return True
 
-def application_layer(data):
-    """Adds application layer header, returns header.
+def application_layer(data, parse = False):
+    """Adds application layer header, return':
+    test()s header.
     
     Uses telnet protocol
     """
-    return 'telnet' + '|' + data
+    if parse == False:
+        return 'telnet' + '||' + data
+    else:
+        temp = data.split('||')
+        print("Application Layer: " + str(temp[0]))
+        return '||'.join(temp[1:])
 
-def presentation_layer(data):
+def presentation_layer(data, parse = False):
     """Adds presentation layer header, return header.
     
     Uses ASCII for the presentation layer
     """
-    return 'ASCII' + '|' + data
+    if parse == False:
+        return 'ASCII' + '||' + data
+    else:
+        temp = data.split('||')
+        print("Presentation Layer: " + str(temp[0]))
+        return '||'.join(temp[1:])
 
-def session_layer(data):
+def session_layer(data, parse = False):
     """Session Layer.
 
     Session control protocol
     """
-    return 'SCP' + '|' + data
+    if parse == False:
+        return 'SCP' + '||' + data
+    else:
+        temp = data.split('||')
+        print("Session Layer: " + str(temp[0]))
+        return '||'.join(temp[1:])
 
-def transport_layer(data):
+def transport_layer(data, parse = False):
     """Transport layer."""
-    port = 9994
-    return str(port) + '||' + data
+    if parse == False:
+        port = 9994
+        return str(port) + '||' + data
+    else:
+        temp = data.split('||')
+        print("Transport Layer: " + str(temp[0]))
+        return '||'.join(temp[1:])
 
-def network_layer(data):
-    """Network layer.
-    
-    """
-    host_ip = socket.gethostbyname(socket.gethostname())
-    dest_ip = input('Enter destination ip address: ')
-    return str(host_ip) + '|' + dest_ip + '||' + data
+def network_layer(data, parse = False):
+    """Network layer."""
+    if parse == False:
+        host_ip = socket.gethostbyname(socket.gethostname())
+        dest_ip = input('Enter destination ip address: ')
+        return str(host_ip) + '|' + dest_ip + '||' + data
+    else:
+        temp = data.split('||')
+        print("Network Layer: " + str(temp[0]))
+        return '||'.join(temp[1:])
 
 def data_link_layer(data, parse = False):
     """Data link layer.
@@ -58,16 +91,22 @@ def data_link_layer(data, parse = False):
         dest_mac = input("Enter the destination mac address: ")
         return str(source_mac) + '|' + dest_mac + '||' + data
     else:
-        pass
+        temp = data.split('||')
+        print("Data Link Layer: " + str(temp[0]))
+        return '||'.join(temp[1:])
+
 def physical_layer(data, parse = False):
     """Physical layer"""
+    data = str(data)
     if parse == False:
-        return data
+        return '[Nil]' + '||' + data
     else:
-        return data
+        temp = data.split('||')
+        print("Physical Layer: " + str(temp[0]))
+        return str('||'.join(temp[1:]))
 
 def test():
-    print('%012X' % getnode())
+    pass
 
 if __name__ == '__main__':
     test()
