@@ -34,13 +34,12 @@ class ThreadedServer(object):
                 data = client.recv(size)
                 if data:
                     # Set the response to echo back the recieved data
-                    response = subprocess.check_output(['getmac','/s',data.decode('ascii')])
+                    response = subprocess.check_output(['arp','-a',data.decode('ascii')])
                     client.send(response)
                 else:
                     raise Exception('Client disconnected')
             except:
                 client.close()
-                threading.Thread.join(self)
                 return False
 
 if __name__ == "__main__":
