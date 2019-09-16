@@ -14,6 +14,9 @@ from math import ceil
 
 def get_message():
     """Validate Input
+
+    :param:
+    :return str:
     """
     while(True):
         x = input("## Enter the message you would like encrypt!").lower()
@@ -24,7 +27,10 @@ def get_message():
 
 def caesers_cipher(operation, message, cipherkey):
     """Caeser's Cipher
-    
+
+    :param operation straakash
+    :
+    :return str:
     """
     temp = ascii_letters
     if operation == "encrypt":
@@ -36,6 +42,7 @@ def caesers_cipher(operation, message, cipherkey):
 
 def vigenere_cipher(operation,message,cipherkey):
     """Vigenere's Cipher
+
     """
     cipheriter = repeat((cipherkey), ceil(len(message)/len(cipherkey)))
     #[print(k) for j in cipheriter for k in j]

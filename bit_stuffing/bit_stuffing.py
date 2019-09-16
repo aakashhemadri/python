@@ -2,7 +2,7 @@
 """
 Created on Wed Jan 30 10:37:46 2019
 
-@author: Aakash Hemadri
+@author: Aakash Hemadr
 """
 
 from bitarray import bitarray

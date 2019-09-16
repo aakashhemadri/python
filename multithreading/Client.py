@@ -19,4 +19,4 @@ class Client(object):
         self.sock.send(ip.encode('ascii'))
         print(self.sock.recv(1024).decode('ascii'))
 if __name__=='__main__':
-    Client('127.0.0.1', 8000).send('127.0.0.1')
+    Client('127.0.0.1', 5000).send('127.0.0.1')

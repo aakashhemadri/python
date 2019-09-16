@@ -14,7 +14,7 @@ class echo_server:
         self.local_hostname = socket.gethostname()
         self.host = self.local_hostname
         #i = input("-- Enter the port to connect."
-        self.port = 9999
+        self. port = 9999
 
     def ask(self):  
         """Request input/interface"""
